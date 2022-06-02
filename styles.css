@@ -1,0 +1,17 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+  }
+
+h1{
+  position: absolute !important;
+  top: 10%;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  display:block;
+  color: black;
+}

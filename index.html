@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head
+  Access-Control-Allow-Origin: *>
+    <meta charset=UTF-8 />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <h1>TBO website, coming soon</h1>
+    <script>var exports = {};</script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.141.0/build/three.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.141.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.141.0/examples/js/loaders/FBXLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.141.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/zlibjs@0.3.1/bin/node-zlib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fflate@0.7.3/umd/index.min.js"></script>
+    <script>
+      let scene, scene2, camera, renderer;
+
+      function init() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xdddddd);
+
+        camera = new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,1,5000);
+        camera.rotation.y = 45/180*Math.PI;
+        camera.position.x = 1;
+        camera.position.y = 5;
+        camera.position.z = 3;
+
+        hlight = new THREE.AmbientLight (0x404040,100);
+        scene.add(hlight);
+
+        directionalLight = new THREE.DirectionalLight(0xffffff,2);
+        directionalLight.position.set(0,1,0);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        light = new THREE.PointLight(0xc4c4c4,10);
+        light.position.set(0,300,500);
+        scene.add(light);
+        light2 = new THREE.PointLight(0xc4c4c4,10);
+        light2.position.set(500,100,0);
+        scene.add(light2);
+        light3 = new THREE.PointLight(0xc4c4c4,10);
+        light3.position.set(0,100,-500);
+        scene.add(light3);
+        light4 = new THREE.PointLight(0xc4c4c4,10);
+        light4.position.set(-500,300,500);
+        scene.add(light4);
+
+        renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer.setSize(window.innerWidth,window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.addEventListener('change', renderer);
+
+        model = new THREE.Object3D();
+
+        let loader = new THREE.GLTFLoader();
+        loader.load('scene.gltf', function(gltf){
+          car = gltf.scene.children[0];
+          car.scale.set(1,1,1);
+          scene.add(gltf.scene);
+          model = gltf.scene
+          animate();
+        });
+
+        /*const loader = new THREE.FBXLoader()
+                        loader.load(
+                            'Monitor_1_Alfri.fbx',
+                            (object) => {
+                                // object.traverse(function (child) {
+                                //     if ((child as THREE.Mesh).isMesh) {
+                                //         // (child as THREE.Mesh).material = material
+                                //         if ((child as THREE.Mesh).material) {
+                                //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
+                                //         }
+                                //     }
+                                // })
+                                object.scale.set(1.25, 1.25, 1.25)
+                                scene.add(object)
+                                animate()
+                            },
+                            (xhr) => {
+                                console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+                            },
+                            (error) => {
+                                console.log(error)
+                            }
+                        )*/
+      }
+      function animate() {
+        renderer.render(scene,camera);
+        requestAnimationFrame(animate);
+        //model.rotation.y = Date.now()*.002
+        //model.rotation.x = Date.now()*.002
+        document.addEventListener('scroll', function(e){
+            let scale = -0.00001;
+            //model.rotateY( e.movementX * scale );
+            model.rotateX( e.movementY * scale ); 
+            model.rotation.z = 0; //this is important to keep the camera level..
+        })
+      }
+      init();
+    </script>
+  </body>
+</html>
